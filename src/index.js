@@ -4,10 +4,12 @@ const allBlendsUrl = 'http://localhost:3000/spiceblends/'
 const ingredientUrl = 'http://localhost:3000/ingredients/'
 
 const spiceBlendDetail = document.getElementById('spice-blend-detail')
+const ingredientUl = spiceBlendDetail.querySelector('.ingredients-list')
 const updateForm = document.getElementById('update-form')
 const ingredientForm = document.getElementById('ingredient-form')
 
-getSpiceBlend()
+getFirstBlend()
+getIngredients()
 // ********** EVENT LISTENERS **********
 
 updateForm.addEventListener('submit', updateEvent)
@@ -15,27 +17,46 @@ ingredientForm.addEventListener('submit', addIngredientEvent)
 
 // ********** FUNCTIONS **********
 
-function getSpiceBlend() {
-    fetch(allBlendsUrl)
-    .then(response => response.json())
-    .then(allSpiceBlends)
-}
+// Advanced Deliverables 
 
-function allSpiceBlends(spiceData) {
-    // console.log(spiceData);
-    spiceData.forEach(blend => showFirstBlend(blend));
+// function getAllBlends() {
+
+// }
+
+// function allSpiceBlends(spiceData) {
+//     // console.log(spiceData);
+//     spiceData.forEach(blend => showFirstBlend(blend));
+// }
+
+function getFirstBlend() {
+    fetch(`${allBlendsUrl}1`)
+    .then(response => response.json())
+    .then(showFirstBlend)
 }
-// this could be more dynamic
 
 function showFirstBlend(blend) {
-    if(blend.id == 1) {
-        let img = spiceBlendDetail.querySelector('.detail-image') 
-        let title = spiceBlendDetail.querySelector('.title')
+    let img = spiceBlendDetail.querySelector('.detail-image') 
+    let title = spiceBlendDetail.querySelector('.title')
 
-        img.src = blend.image
-        img.alt = blend.title
-        title.innerHTML = blend.title
-    }
+    img.src = blend.image
+    img.alt = blend.title
+    title.innerHTML = blend.title
+}
+
+function getIngredients() {
+    fetch(ingredientUrl)
+    .then(response => response.json())
+    .then(showIngredients)
+}
+
+function showIngredients(ingr) {
+    ingr.forEach(i => {
+        if(i.spiceblendId === 1) {
+            let li = document.createElement('li')
+            li.innerHTML = i.name
+            ingredientUl.appendChild(li)
+        }
+    })
 }
 
 function updateEvent(event) {
@@ -48,12 +69,18 @@ function updateEvent(event) {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(updateObj)
     })
+
     let htmlTitle = spiceBlendDetail.querySelector('.title')
     htmlTitle.innerHTML = title
 }
 
 function addIngredientEvent(event) {
     event.preventDefault()
-    const newTitle = event.target.name.value
-    console.log(newTitle);
+    const newSpice = event.target.name.value
+    let li = document.createElement('li')
+
+    li.innerHTML = newSpice
+    ingredientUl.appendChild(li)
 }
+
+
