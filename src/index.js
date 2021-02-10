@@ -40,24 +40,20 @@ function showFirstBlend(blend) {
 
 function updateEvent(event) {
     event.preventDefault()
-    const newTitle = event.target.title.value
+    const title = event.target.title.value
+    updateObj = {title}
 
-    
-}
-
-function updateBlend(update) {
-    let title = spiceBlendDetail.querySelector('.title')
-    title.innerHTML = update
+    fetch(`${allBlendsUrl}/1`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(updateObj)
+    })
+    let htmlTitle = spiceBlendDetail.querySelector('.title')
+    htmlTitle.innerHTML = title
 }
 
 function addIngredientEvent(event) {
     event.preventDefault()
     const newTitle = event.target.name.value
-
-    fetch(`${allBlendsUrl}/1`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(updateBlend(newTitle))
-    })
-
+    console.log(newTitle);
 }
